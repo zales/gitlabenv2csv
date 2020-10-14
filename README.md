@@ -6,7 +6,7 @@ gitlabenv2csv allows you to download GitLab ENV variables to a csv file. Manuall
 
 ## Install dependecies
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 ## Usage
 
