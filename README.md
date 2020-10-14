@@ -2,7 +2,7 @@
 
 ## About
 
-gitlabenv2csv allows you to download GitLab ENV variables to a csv file. Manually edit and record back to the project / group.
+gitlabenv2csv allows you to download GitLab ENV variables to a csv file. Manually edit and upload back to the project / group.
 
 ## Install dependecies
 ```
