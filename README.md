@@ -34,5 +34,5 @@ optional arguments:
 
 ### Example
 ```
-gitlabenv2csv.py -d -i 243 -g -c config.in
+gitlabenv2csv.py -d -i 243 -g -c config.ini
 ```
