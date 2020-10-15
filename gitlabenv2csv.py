@@ -12,8 +12,7 @@ import pandas_schema
 from pandas_schema import Column
 import numpy as np
 
-
-
+logging.getLogger().setLevel(logging.INFO)
 pd.set_option('display.max_colwidth', 120)
 
 
@@ -80,7 +79,7 @@ def gitlab_env_to_csv(element, file_path):
     df.to_csv(file_path, index=False)
 
 
-def csv_to_gitlab_env(element, file_path='dict.csv'):
+def csv_to_gitlab_env(element, file_path):
 
     # Parse csv file
     df = pd.read_csv(file_path, index_col=False)
@@ -100,15 +99,18 @@ def csv_to_gitlab_env(element, file_path='dict.csv'):
     backup_file = "backup-%s-%s-%s" % (repo_name, repo_id, timestamp)
     gitlab_env_to_csv(element, backup_file)
 
-    # Delete all ENV variables in group/project
-    for env in element.variables.list(as_list=False):
-        element.variables.delete(env.key)
 
+    variables = element.variables.list(all=True)
+    # Delete all ENV variables in group/project
+    for env in variables:
+        logging.info("Deleting variable: %s" % env.key)
+        element.variables.delete(env.key)
+    
     # Create ENV variables
     for row in df.itertuples(index=True):
         variable = {'variable_type': row.variable_type, 'key': row.key, 'value': row.value,
                     'protected': row.protected, 'masked': row.masked}
-
+        logging.info("Creating variable: %s" % variable)
         element.variables.create(variable)
 
 
