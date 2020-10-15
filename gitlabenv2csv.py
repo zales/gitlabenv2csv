@@ -33,7 +33,7 @@ def check_key(key):
 
 def check_variable_type(variable_type):
 
-    if variable_type in {'env_var', 'koko'}:
+    if variable_type in {'env_var', 'file'}:
         return True
     return False
 
