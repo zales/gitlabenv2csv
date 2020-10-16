@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-gitlabenv2csv GitLab ENV downloader/uploader. 
+gitlabenv2csv GitLab ENV downloader/uploader.
 """
 
 import sys
@@ -143,20 +143,26 @@ def csv_to_gitlab_env(element, file_path, backup_path='backups'):
 def main():
     """gitlabenv2csv parse config"""
     p = configargparse.ArgParser(default_config_files=['config.ini'])
-    p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
+    p.add('-c', '--my-config', required=False, is_config_file=True,
+          help='config file path')
     p.add('-l', '--gitlab_url', required=True,
           help='Gitlab url')
     p.add('-t', '--gitlab_token', required=True,
           help='Gitlab token')
     element = p.add_mutually_exclusive_group(required=True)
-    element.add_argument('-g', '--group', action='store_true', help='Edit group ENV')
-    element.add_argument('-p', '--project', action='store_true', help='Edit project ENV')
+    element.add_argument('-g', '--group', action='store_true',
+                         help='Edit group ENV')
+    element.add_argument('-p', '--project', action='store_true',
+                         help='Edit project ENV')
     p.add('-i', '--element_id', type=int, required=True,
           help='Gitab project/group id')
-    p.add('-f', '--file_path', required=False, default='data_env.csv')
+    p.add('-f', '--file_path', required=False, default='data_env.csv',
+          help='path to csv file')
     method = p.add_mutually_exclusive_group(required=True)
-    method.add_argument('-d', '--download', action='store_true', help='Download gitlab ENV to csv')
-    method.add_argument('-u', '--upload', action='store_true', help='Upload csv to gitlab ENV')
+    method.add_argument('-d', '--download', action='store_true',
+                        help='Download gitlab ENV to csv')
+    method.add_argument('-u', '--upload', action='store_true',
+                        help='Upload csv to gitlab ENV')
 
     options = p.parse_args()
 
