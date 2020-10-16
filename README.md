@@ -1,5 +1,7 @@
 # gitlabenv2csv
 
+![Docker Pulls](https://img.shields.io/docker/pulls/zales/gitlabenv2csv?style=flat-square) ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/zales/gitlabenv2csv?style=flat-square) ![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/zales/gitlabenv2csv) ![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/zales/gitlabenv2csv?style=flat-square) ![GitHub](https://img.shields.io/github/license/zales/gitlabenv2csv?style=flat-square)
+
 ## About
 
 gitlabenv2csv allows you to download GitLab ENV variables to a csv file. Manually edit and upload back to the project / group.
