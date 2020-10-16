@@ -26,7 +26,7 @@ gitlabenv2csv.py -d -i <project/gitlab id> -g -c config.ini
 Or you can use prebuild docker container and execute script like this:
 
 ```bash
-docker run -v ${PWD}/backups:/app/backups -v ${PWD}:/app/file -it zales/gitlabenv2csv:latest -l https://gitlab.eman.cz -t <api_token> -i 987 -p -u -f /app/file/gitlab_env.csv
+docker run -v ${PWD}/backups:/app/backups -v ${PWD}:/app/file -it zales/gitlabenv2csv:latest -l https://gitlab.example.com -t <api_token> -i <project/gitlab id> -p -u -f /app/file/gitlab_env.csv
 ```
 
 ## Usage
