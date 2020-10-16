@@ -1,14 +1,13 @@
-FROM python:3-slim
+FROM python:3-alpine
 
 LABEL maintainer="o.zalesky@gmail.com"
 
 WORKDIR /app
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apk update && \
+    apk add --no-cache \
     gcc \
-    g++ \
- && rm -rf /var/lib/apt/lists/*
+    g++
 
 COPY requirements.txt .
 
