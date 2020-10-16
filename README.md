@@ -13,7 +13,7 @@ Install dependecies:
 ```bash
 pip3 install -r requirements.txt
 ```
-And execure script:
+And execute script:
 
 ```bash
 gitlabenv2csv.py -d -i 243 -g -c config.ini
