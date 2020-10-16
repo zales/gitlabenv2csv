@@ -1,8 +1,14 @@
 FROM python:3-slim
 
-WORKDIR /code
+LABEL maintainer="o.zalesky@gmail.com"
 
-RUN apt-get update && apt-get install -y gcc g++
+WORKDIR /app
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 
