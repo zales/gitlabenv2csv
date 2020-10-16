@@ -4,10 +4,29 @@
 
 gitlabenv2csv allows you to download GitLab ENV variables to a csv file. Manually edit and upload back to the project / group.
 
-## Install dependecies
-```
+## Install
+
+### pip
+
+Install dependecies:
+
+```bash
 pip3 install -r requirements.txt
 ```
+And execure script:
+
+```bash
+gitlabenv2csv.py -d -i 243 -g -c config.ini
+```
+
+### Docker
+
+Or you can use prebuild docker container and execute script like this:
+
+```bash
+docker run -v ${PWD}/backups:/app/backups -v ${PWD}:/app/file -it zales/gitlabenv2csv:latest -l https://gitlab.eman.cz -t <api_token> -i 987 -p -u -f /app/file/gitlab_env.csv
+```
+
 ## Usage
 
 ```
@@ -35,6 +54,7 @@ optional arguments:
 ```
 
 ### Example
-```
+
+```bash
 gitlabenv2csv.py -d -i 243 -g -c config.ini
 ```
