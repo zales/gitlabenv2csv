@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+gitlabenv2csv GitLab ENV downloader/uploader. 
+"""
 
 import sys
 from datetime import datetime
@@ -18,6 +23,7 @@ pd.set_option('display.max_colwidth', 120)
 
 
 def check_boolean(boolean):
+    """return True if boolean"""
 
     if isinstance(boolean, bool):
         return True
@@ -25,6 +31,7 @@ def check_boolean(boolean):
 
 
 def check_key(key):
+    """return True if ENV key is valid"""
 
     if re.match("^[A-Za-z0-9_-]*$", key):
         return True
@@ -32,6 +39,7 @@ def check_key(key):
 
 
 def check_variable_type(variable_type):
+    """return True if GitLab variable_type is valid"""
 
     if variable_type in {'env_var', 'file'}:
         return True
@@ -39,12 +47,21 @@ def check_variable_type(variable_type):
 
 
 def data_validation(data):
+    """return True if csv data to upload id valid"""
 
     # define validation elements
-    key_validation = [CustomElementValidation(lambda k: check_key(k), 'is not valid key - only letters, digits and _')]
-    bool_validation = [CustomElementValidation(lambda b: check_boolean(b), 'is not boolean')]
-    null_validation = [CustomElementValidation(lambda d: d is not np.nan, 'this field cannot be null')]
-    variable_type_validation = [CustomElementValidation(lambda t: check_variable_type(t), 'is not valid variable_type')]
+    key_validation = [CustomElementValidation(
+        lambda k: check_key(k), 'is not valid key - only letters, digits and _'
+        )]
+    bool_validation = [CustomElementValidation(
+        lambda b: check_boolean(b), 'is not boolean'
+        )]
+    null_validation = [CustomElementValidation(
+        lambda d: d is not np.nan, 'this field cannot be null'
+        )]
+    variable_type_validation = [CustomElementValidation(
+        lambda t: check_variable_type(t), 'is not valid variable_type'
+        )]
 
 
     # variable_type,key,value,protected,masked
@@ -60,15 +77,16 @@ def data_validation(data):
     errors = schema.validate(data)
     errors_index_rows = [e.row for e in errors]
 
-    if not errors_index_rows:
-        logging.info("CSV validation passed.")
-        return True
-    else:
+    if errors_index_rows:
         logging.error(pd.DataFrame({'errors':errors}))
         return False
 
+    logging.info("CSV validation passed.")
+    return True
+
 
 def gitlab_env_to_csv(element, file_path):
+    """download all env from projekt gitlab to csv file"""
 
     # ENV variables to list
     test = []
@@ -82,6 +100,7 @@ def gitlab_env_to_csv(element, file_path):
 
 
 def csv_to_gitlab_env(element, file_path, backup_path='backups'):
+    """upload csv file with env data to Gitlab project/group"""
 
     # Parse csv file
     df = pd.read_csv(file_path, index_col=False)
@@ -122,6 +141,7 @@ def csv_to_gitlab_env(element, file_path, backup_path='backups'):
 
 
 def main():
+    """gitlabenv2csv parse config"""
     p = configargparse.ArgParser(default_config_files=['config.ini'])
     p.add('-c', '--my-config', required=False, is_config_file=True, help='config file path')
     p.add('-l', '--gitlab_url', required=True,
