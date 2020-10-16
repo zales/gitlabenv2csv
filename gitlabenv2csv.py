@@ -3,6 +3,7 @@
 import sys
 from datetime import datetime
 import re
+import os
 import logging
 import gitlab
 import configargparse
@@ -60,6 +61,7 @@ def data_validation(data):
     errors_index_rows = [e.row for e in errors]
 
     if not errors_index_rows:
+        logging.info("CSV validation passed.")
         return True
     else:
         logging.error(pd.DataFrame({'errors':errors}))
@@ -79,7 +81,7 @@ def gitlab_env_to_csv(element, file_path):
     df.to_csv(file_path, index=False)
 
 
-def csv_to_gitlab_env(element, file_path):
+def csv_to_gitlab_env(element, file_path, backup_path='backups'):
 
     # Parse csv file
     df = pd.read_csv(file_path, index_col=False)
@@ -93,24 +95,29 @@ def csv_to_gitlab_env(element, file_path):
 
 
     # Backup current ENV variables
+
+    if not os.path.exists(backup_path):
+        os.makedirs(backup_path)
+
     repo_name = element.name
     repo_id = element.id
     timestamp = datetime.today().strftime('%Y%m%d%H%M%S')
-    backup_file = "backup-%s-%s-%s" % (repo_name, repo_id, timestamp)
+    os.makedirs('my_folder')
+    backup_file = "%s/backup-%s-%s-%s.csv" % (backup_path, repo_name, repo_id, timestamp)
     gitlab_env_to_csv(element, backup_file)
 
 
-    variables = element.variables.list(all=True)
     # Delete all ENV variables in group/project
+    variables = element.variables.list(all=True)
     for env in variables:
-        logging.info("Deleting variable: %s" % env.key)
+        logging.info("Deleting variable: %s", env.key)
         element.variables.delete(env.key)
-    
+
     # Create ENV variables
     for row in df.itertuples(index=True):
         variable = {'variable_type': row.variable_type, 'key': row.key, 'value': row.value,
                     'protected': row.protected, 'masked': row.masked}
-        logging.info("Creating variable: %s" % variable)
+        logging.info("Creating variable: %s", variable)
         element.variables.create(variable)
 
 
