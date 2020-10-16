@@ -18,7 +18,7 @@ pip3 install -r requirements.txt
 And execute script:
 
 ```bash
-gitlabenv2csv.py -d -i 243 -g -c config.ini
+gitlabenv2csv.py -d -i <project/gitlab id> -g -c config.ini
 ```
 
 ### Docker
