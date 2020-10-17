@@ -71,7 +71,8 @@ def data_validation(data):
         Column('key', key_validation + null_validation),
         Column('value', null_validation),
         Column('protected', bool_validation + null_validation),
-        Column('masked', bool_validation + null_validation)])
+        Column('masked', bool_validation + null_validation),
+        Column('environment_scope', null_validation)])
 
     # apply validation
     errors = schema.validate(data)
@@ -91,10 +92,10 @@ def gitlab_env_to_csv(element, file_path):
     # ENV variables to list
     test = []
     for env in element.variables.list(as_list=False):
-        test.append([env.variable_type, env.key, env.value, env.protected, env.masked])
+        test.append([env.variable_type, env.key, env.value, env.protected, env.masked, env.environment_scope])
 
     # ENV variables to csv file
-    df = pd.DataFrame(test, columns=['variable_type', 'key', 'value', 'protected', 'masked'])
+    df = pd.DataFrame(test, columns=['variable_type', 'key', 'value', 'protected', 'masked', 'environment_scope'])
     logging.info(df)
     df.to_csv(file_path, index=False)
 
@@ -114,14 +115,12 @@ def csv_to_gitlab_env(element, file_path, backup_path='backups'):
 
 
     # Backup current ENV variables
-
     if not os.path.exists(backup_path):
         os.makedirs(backup_path)
 
     repo_name = element.name
     repo_id = element.id
     timestamp = datetime.today().strftime('%Y%m%d%H%M%S')
-    os.makedirs('my_folder')
     backup_file = "%s/backup-%s-%s-%s.csv" % (backup_path, repo_name, repo_id, timestamp)
     gitlab_env_to_csv(element, backup_file)
 
