@@ -9,10 +9,11 @@ RUN apk update && \
     gcc \
     g++
 
-COPY requirements.txt .
+COPY gitlabenv2csv ./gitlabenv2csv
+COPY setup.py .
+COPY README.md .
 
-RUN pip3 install -r requirements.txt
+RUN python3 setup.py sdist bdist_wheel && \
+    pip3 install dist/gitlabenv2csv-*.tar.gz
 
-COPY gitlabenv2csv.py .
-
-ENTRYPOINT [ "python", "./gitlabenv2csv.py" ]
+ENTRYPOINT [ "gitlabenv2csv" ]
