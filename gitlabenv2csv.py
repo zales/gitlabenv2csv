@@ -46,8 +46,20 @@ def check_variable_type(variable_type):
     return False
 
 
-def data_validation(data):
+def check_environment_scope(environment_scope, environment_scopes):
+    """check if evironment_scope exists"""
+
+    if environment_scope in environment_scopes or environment_scope == '*':
+        return True
+    return False
+
+
+def data_validation(data, element):
     """return True if csv data to upload id valid"""
+
+    environment_scopes = []
+    for e_scope in element.environments.list():
+        environment_scopes.append(e_scope.slug)
 
     # define validation elements
     key_validation = [CustomElementValidation(
@@ -62,6 +74,9 @@ def data_validation(data):
     variable_type_validation = [CustomElementValidation(
         lambda t: check_variable_type(t), 'is not valid variable_type'
         )]
+    environment_scope_validation = [CustomElementValidation(
+        lambda e: check_environment_scope(e, environment_scopes), 'is not valid environment_scope'
+        )]
 
 
     # variable_type,key,value,protected,masked
@@ -72,7 +87,7 @@ def data_validation(data):
         Column('value', null_validation),
         Column('protected', bool_validation + null_validation),
         Column('masked', bool_validation + null_validation),
-        Column('environment_scope', null_validation)])
+        Column('environment_scope', null_validation + environment_scope_validation)])
 
     # apply validation
     errors = schema.validate(data)
@@ -92,10 +107,12 @@ def gitlab_env_to_csv(element, file_path):
     # ENV variables to list
     test = []
     for env in element.variables.list(as_list=False):
-        test.append([env.variable_type, env.key, env.value, env.protected, env.masked, env.environment_scope])
+        test.append([env.variable_type, env.key, env.value, env.protected,
+                     env.masked, env.environment_scope])
 
     # ENV variables to csv file
-    df = pd.DataFrame(test, columns=['variable_type', 'key', 'value', 'protected', 'masked', 'environment_scope'])
+    df = pd.DataFrame(test, columns=['variable_type', 'key', 'value', 'protected',
+                                     'masked', 'environment_scope'])
     logging.info(df)
     df.to_csv(file_path, index=False)
 
@@ -107,12 +124,11 @@ def csv_to_gitlab_env(element, file_path, backup_path='backups'):
     df = pd.read_csv(file_path, index_col=False)
 
     # validate csv file
-    if data_validation(df):
+    if data_validation(df, element):
         logging.info("Data validation passed.")
     else:
         logging.error("Data validation failed. Please check csv file.")
         sys.exit(123)
-
 
     # Backup current ENV variables
     if not os.path.exists(backup_path):
@@ -135,7 +151,7 @@ def csv_to_gitlab_env(element, file_path, backup_path='backups'):
     for row in df.itertuples(index=True):
         variable = {'variable_type': row.variable_type, 'key': row.key, 'value': row.value,
                     'protected': row.protected, 'masked': row.masked}
-        logging.info("Creating variable: %s", variable)
+        logging.info("Creating variable: %s", variable.values())
         element.variables.create(variable)
 
 
