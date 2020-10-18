@@ -150,7 +150,8 @@ def csv_to_gitlab_env(element, file_path, backup_path='backups'):
     # Create ENV variables
     for row in df.itertuples(index=True):
         variable = {'variable_type': row.variable_type, 'key': row.key, 'value': row.value,
-                    'protected': row.protected, 'masked': row.masked}
+                    'protected': row.protected, 'masked': row.masked,
+                    'environment_scope': row.environment_scope}
         logging.info("Creating variable: %s", variable.values())
         element.variables.create(variable)
 
