@@ -13,7 +13,7 @@ with open(os.path.join(HERE, "README.md")) as fid:
 # This call to setup() does all the work
 setup(
     name="gitlabenv2csv",
-    version="1.0.1",
+    version="1.0.2",
     description="""gitlabenv2csv allows you to download GitLab ENV variables to a csv file. 
                    Manually edit and upload back to the project / group.""",
     long_description=README,
